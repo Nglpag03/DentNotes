@@ -1,20 +1,631 @@
-<ion-header [translucent]="true">
+<ion-content [fullscreen]="true">
+<ion-header class="mobile-header" slot="fixed">
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <div class="mobile-brand">
+      <div class="mobile-logo">✦</div>
+      <div class="mobile-brand-text">
+        <strong class="mobile-title">DentNotes</strong>
+        <small class="mobile-subtitle">Student clinic</small>
+      </div>
+    </div>
+    <ion-buttons slot="end">
+      <button
+        type="button"
+        class="mobile-signout"
+        aria-label="Sign out"
+        title="Sign out"
+        (click)="signOut()">
+        <ion-icon name="log-out-outline" aria-hidden="true"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
+    <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+      <ion-refresher-content
+        pullingIcon="chevron-down-circle-outline"
+        pullingText="Pull to refresh"
+        refreshingSpinner="crescent"
+        refreshingText="Refreshing…">
+      </ion-refresher-content>
+    </ion-refresher>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="app-layout">
+    <aside class="desktop-sidebar">
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+      <div class="brand-block">
+        <div class="logo-tile">✦</div>
+        <div>
+          <strong>DentNotes</strong>
+          <small>Student clinic notebook</small>
+        </div>
+      </div>
+
+      <nav class="side-nav">
+        <button [class.active]="view() === 'dashboard'" (click)="go('dashboard')">
+          <ion-icon name="grid-outline"></ion-icon>
+          Dashboard
+        </button>
+        <button [class.active]="view() !== 'dashboard'" (click)="go('patients')">
+          <ion-icon name="people-outline"></ion-icon>
+          Patients
+          <ion-badge>{{ patients().length }}</ion-badge>
+        </button>
+      </nav>
+
+      <div class="side-label">
+        <span>Recent patients</span>
+<button type="button" (click)="addPatient()" aria-label="Add new patient" title="Add new patient">
+  <ion-icon name="add" aria-hidden="true"></ion-icon>
+</button>
+      </div>
+
+      <ion-searchbar
+        class="side-search"
+        placeholder="Search patients"
+        [value]="query()"
+        (ionInput)="setQuery($event)"
+        [debounce]="120">
+      </ion-searchbar>
+
+      <div class="side-patients">
+          <p class="side-empty" *ngIf="filteredPatients().length === 0">
+            {{ query() ? 'No matches' : 'No patients yet' }}
+          </p>
+<button
+  *ngFor="let patient of filteredPatients()"
+  [attr.aria-label]="'Open ' + patient.name"
+  (click)="openPatient(patient.id)"
+  [class.selected]="selectedId() === patient.id && view() === 'patient'">
+  <ion-avatar aria-hidden="true">
+    <span>{{ patient.initials }}</span>
+  </ion-avatar>
+  <span aria-hidden="true">
+    <strong>{{ patient.name }}</strong>
+    <small>{{ patient.concern }}</small>
+  </span>
+  <ion-icon name="chevron-forward" aria-hidden="true"></ion-icon>
+</button>
+      </div>
+
+      <div class="student-chip">
+        <ion-avatar>
+          <span>{{ studentInitials() }}</span>
+        </ion-avatar>
+        <div>
+          <strong>{{ studentName() }}</strong>
+          <small>Dental student</small>
+        </div>
+<button class="signout-btn" type="button" title="Sign out" aria-label="Sign out" (click)="signOut()">
+  <ion-icon name="log-out-outline" aria-hidden="true"></ion-icon>
+</button>
+      </div>
+
+    </aside>
+
+    <main class="main-area">
+
+      <!-- LOADING / ERROR -->
+      <ng-template #state>
+        <div *ngIf="loading()" class="skeleton-page" aria-busy="true" aria-label="Loading your dashboard">
+          <div class="sk sk-title"></div>
+          <div class="sk sk-banner"></div>
+          <div class="sk-row">
+            <div class="sk sk-card" *ngFor="let n of [1, 2, 3]"></div>
+          </div>
+          <div class="sk-row two">
+            <div class="sk sk-panel"></div>
+            <div class="sk sk-panel"></div>
+          </div>
+        </div>
+        <div *ngIf="!loading() && error()" class="state-box">
+          <p>{{ error() }}</p>
+          <ion-button (click)="load()">Retry</ion-button>
+        </div>
+      </ng-template>
+
+      <ng-container *ngIf="!loading() && !error(); else state">
+
+        <!-- DASHBOARD -->
+        <section *ngIf="view() === 'dashboard'" class="dashboard-page">
+
+<div class="page-heading">
+  <div class="heading-text">
+    <span class="eyebrow">{{ today | date:'fullDate' }}</span>
+    <h1 #dashboardHeading tabindex="-1">
+      <span class="greeting-word">{{ greeting() }},</span>
+      <span class="greeting-name">{{ firstName() }}</span>
+    </h1>
+    <p>Here’s a clear view of your student clinic today.</p>
   </div>
+  <div class="heading-actions">
+    <ion-button fill="outline" class="btn-new-patient" (click)="addPatient()">
+      + New patient
+    </ion-button>
+    <ion-button class="btn-add-session" (click)="addSession()">
+      + Add session
+    </ion-button>
+  </div>
+</div>
+
+          <section class="welcome-card">
+            <div>
+              <span class="eyebrow light">{{ focus().eyebrow }}</span>
+              <h2>{{ focus().title }}</h2>
+              <p>{{ focus().text }}</p>
+<button type="button" class="link-button" (click)="runFocus()">
+  {{ focus().action }}
+  <ion-icon name="arrow-forward" aria-hidden="true"></ion-icon>
+</button>
+            </div>
+            <div class="welcome-art">
+              <div class="art-orb"></div>
+              <div class="art-tooth">✦</div>
+              <div class="art-note">✎ <span>Care notes</span></div>
+            </div>
+          </section>
+
+          <section class="metric-grid">
+<ion-card
+  class="metric-link"
+  role="button"
+  tabindex="0"
+  aria-label="View all patients"
+  (click)="go('patients')"
+  (keyup.enter)="go('patients')"
+  (keyup.space)="go('patients')">
+  <ion-card-content>
+    <span class="metric-icon purple">
+      <ion-icon name="people-outline" aria-hidden="true"></ion-icon>
+    </span>
+    <div>
+      <ion-note>Total patients</ion-note>
+      <strong>{{ patients().length }}</strong>
+      <small>Active records</small>
+    </div>
+    <b aria-hidden="true">↗</b>
+  </ion-card-content>
+</ion-card>
+
+            <ion-card>
+              <ion-card-content>
+                <span class="metric-icon lilac">
+                  <ion-icon name="checkmark-circle"></ion-icon>
+                </span>
+                <div>
+                  <ion-note>Sessions completed</ion-note>
+                  <strong>{{ completedSessions() }}</strong>
+                  <small>Across all patients</small>
+                </div>
+                <b>↗</b>
+              </ion-card-content>
+            </ion-card>
+
+            <ion-card>
+              <ion-card-content>
+                <span class="metric-icon peach">
+                  <ion-icon name="time-outline"></ion-icon>
+                </span>
+                <div>
+                  <ion-note>Upcoming sessions</ion-note>
+                  <strong>{{ upcomingSessions().length }}</strong>
+                  <small>{{ overdueCount() > 0 ? overdueCount() + ' overdue' : 'Needs your attention' }}</small>
+                </div>
+                <b>→</b>
+              </ion-card-content>
+            </ion-card>
+          </section>
+
+          <div class="dashboard-columns">
+
+            <ion-card class="surface-card">
+              <ion-card-header>
+                <div class="section-heading">
+                  <div>
+                    <span class="eyebrow">Your schedule</span>
+                    <ion-card-title>Upcoming sessions</ion-card-title>
+                  </div>
+                  <ion-button fill="clear" size="small" (click)="addSession()">Add session ＋</ion-button>
+                </div>
+              </ion-card-header>
+              <ion-card-content>
+                <div class="empty-state" *ngIf="upcomingSessions().length === 0">
+                  <div class="empty-icon success">
+                    <ion-icon name="checkmark-circle" aria-hidden="true"></ion-icon>
+                  </div>
+                  <h3>All caught up</h3>
+                  <p>No upcoming sessions on your schedule right now.</p>
+                  <ion-button size="small" fill="outline" class="btn-new-patient" (click)="addSession()">
+                    Add a session
+                  </ion-button>
+                </div>
+<div
+  class="schedule-row"
+  role="button"
+  tabindex="0"
+  [attr.aria-label]="'Open ' + session.patientName + ' — ' + session.type + ' on ' + whenLabel(session.date)"
+  *ngFor="let session of upcomingSessions().slice(0, 5)"
+  (click)="openPatient(session.patientId)"
+  (keyup.enter)="openPatient(session.patientId)"
+  (keyup.space)="openPatient(session.patientId)">
+                  <span class="schedule-date">
+                    <strong>{{ session.date | date:'d' }}</strong>
+                    <small>{{ session.date | date:'MMM' }}</small>
+                  </span>
+                  <span class="schedule-copy">
+                    <strong>{{ session.patientName }}</strong>
+                    <small>{{ whenLabel(session.date) }} · {{ session.type }}</small>
+                  </span>
+                  <ion-badge
+                    [class.in-progress]="session.status === 'in-progress'"
+                    [class.overdue]="isOverdue(session.date)">
+                    {{ isOverdue(session.date) ? 'Overdue' : statusLabel(session.status) }}
+                  </ion-badge>
+<button
+  type="button"
+  class="row-action"
+  title="Mark complete"
+  [attr.aria-label]="'Mark ' + session.type + ' for ' + session.patientName + ' as complete'"
+  [disabled]="isBusy(session.id)"
+  (click)="completeSession(session.patientId, session.id, $event)">
+  <ion-spinner *ngIf="isBusy(session.id)" name="dots"></ion-spinner>
+  <ion-icon *ngIf="!isBusy(session.id)" name="checkmark-circle" aria-hidden="true"></ion-icon>
+</button>
+                  <ion-icon name="chevron-forward"></ion-icon>
+                </div>
+              </ion-card-content>
+            </ion-card>
+
+            <ion-card class="surface-card">
+              <ion-card-header>
+                <div class="section-heading">
+                  <div>
+                    <span class="eyebrow">Patient list</span>
+                    <ion-card-title>Recent patients</ion-card-title>
+                  </div>
+                  <ion-button fill="clear" size="small" (click)="go('patients')">View all →</ion-button>
+                </div>
+              </ion-card-header>
+              <ion-card-content>
+                  <div class="empty-state" *ngIf="patients().length === 0">
+                    <div class="empty-icon purple">
+                      <ion-icon name="people-outline" aria-hidden="true"></ion-icon>
+                    </div>
+                    <h3>No patients yet</h3>
+                    <p>Add your first patient to start tracking visits and sessions.</p>
+                    <ion-button size="small" class="btn-add-session" (click)="addPatient()">
+                      + New patient
+                    </ion-button>
+                  </div>
+<button
+  class="recent-row"
+  *ngFor="let patient of patients().slice(0, 4)"
+  [attr.aria-label]="'Open patient ' + patient.name"
+  (click)="openPatient(patient.id)">
+  <ion-avatar aria-hidden="true">
+    <span>{{ patient.initials }}</span>
+  </ion-avatar>
+  <span>
+    <strong>{{ patient.name }}</strong>
+    <small *ngIf="patient.concern || nextSession(patient)">
+      {{ patient.concern }}<ng-container *ngIf="nextSession(patient) as upcoming"> · Next {{ upcoming.date | date:'MMM d' }}</ng-container>
+    </small>
+  </span>
+  <ion-icon name="chevron-forward" aria-hidden="true"></ion-icon>
+</button>
+              </ion-card-content>
+            </ion-card>
+
+          </div>
+        </section>
+
+        <!-- PATIENTS -->
+<section *ngIf="view() === 'patients'" class="directory-page">
+  <div class="page-heading directory-heading">
+    <div>
+      <span class="eyebrow">Patients</span>
+      <h1 #patientsHeading tabindex="-1">All patients</h1>
+      <p class="directory-count">
+        {{ filteredPatients().length }}
+        {{ filteredPatients().length === 1 ? 'patient' : 'patients' }}
+        <ng-container *ngIf="query()">
+          matching "{{ query() }}"
+        </ng-container>
+      </p>
+    </div>
+    <!-- Desktop-only big button; hidden on mobile -->
+    <div class="heading-actions">
+      <ion-button class="btn-new-patient-in-patient" (click)="addPatient()">
+        + New patient
+      </ion-button>
+    </div>
+  </div>
+
+  <ion-searchbar
+    class="directory-search"
+    placeholder="Search patients"
+    [value]="query()"
+    (ionInput)="setQuery($event)"
+    [debounce]="200">
+  </ion-searchbar>
+
+<!-- Case A: no patients at all -->
+<div class="empty-state directory-empty" *ngIf="patients().length === 0">
+  <div class="empty-icon purple">
+    <ion-icon name="people-outline" aria-hidden="true"></ion-icon>
+  </div>
+  <h3>No patients yet</h3>
+  <p>Add your first patient to get started with DentNotes.</p>
+  <ion-button class="btn-new-patient-in-patient" (click)="addPatient()">
+    + New patient
+  </ion-button>
+</div>
+
+<!-- Case B: patients exist but search returned nothing -->
+<div class="empty-state directory-empty" *ngIf="patients().length > 0 && filteredPatients().length === 0">
+  <div class="empty-icon muted">
+    <ion-icon name="search-outline" aria-hidden="true"></ion-icon>
+  </div>
+  <h3>No matches</h3>
+  <p>No patients match "{{ query() }}". Try a different name or concern.</p>
+  <ion-button fill="outline" class="btn-new-patient" (click)="clearSearch()">
+    Clear search
+  </ion-button>
+</div>
+
+<div class="directory-grid">
+  <button
+    class="directory-card"
+    *ngFor="let patient of filteredPatients()"
+    [attr.aria-label]="patient.name + ', ' + patient.concern + ', ' + patient.sessions.length + ' sessions'"
+    (click)="openPatient(patient.id)">
+    <ion-avatar class="directory-avatar" aria-hidden="true">
+      <span>{{ patient.initials }}</span>
+    </ion-avatar>
+    <div class="directory-card-body" aria-hidden="true">
+      <strong>{{ patient.name }}</strong>
+      <small class="directory-concern">{{ patient.concern }}</small>
+    </div>
+    <div class="directory-card-meta" aria-hidden="true">
+      <ion-badge>{{ patient.sessions.length }}</ion-badge>
+      <ion-icon name="chevron-forward"></ion-icon>
+    </div>
+  </button>
+</div>
+        </section>
+
+        <!-- PATIENT DETAIL -->
+        <section *ngIf="view() === 'patient' && selected() as patient" class="patient-page">
+
+          <div class="patient-toolbar">
+<button type="button" class="back-button" (click)="go('dashboard')">
+  <ion-icon name="arrow-back" aria-hidden="true"></ion-icon>
+  Back to dashboard
+</button>
+            <span>/ {{ patient.name }}</span>
+            <div class="heading-actions toolbar-actions">
+              <ion-button fill="outline" class="btn-new-patient" (click)="editPatient()">Edit patient</ion-button>
+              <ion-button fill="outline" class="btn-delete" (click)="deletePatient()">Delete</ion-button>
+              <ion-button class="btn-add-session" (click)="addSession()">+ Add session</ion-button>
+            </div>
+          </div>
+
+          <div class="patient-hero">
+            <div class="patient-heading">
+              <ion-avatar class="patient-avatar">
+                <span>{{ patient.initials }}</span>
+              </ion-avatar>
+              <div>
+                <span class="eyebrow">Patient profile</span>
+                <h1 #patientHeading tabindex="-1">{{ patient.name }}</h1>
+                <p>{{ patient.concern }}</p>
+                <div class="patient-meta">
+                  Patient ID {{ patient.id.slice(0, 8).toUpperCase() }}
+                  <i></i>
+                  Last visit {{ (lastVisit(patient) | date:'MMM d, y') || 'None yet' }}
+                </div>
+              </div>
+            </div>
+            <div class="hero-actions">
+              <ion-badge>
+                {{ patient.allergies === 'No known allergies' ? 'No allergy noted' : 'Allergy noted' }}
+              </ion-badge>
+              <button class="link-button" (click)="downloadReport()">↓ Download PDF report</button>
+            </div>
+          </div>
+
+ <ion-segment
+  [value]="activeTab()"
+  (ionChange)="setTab($event)"
+  aria-label="Patient details sections">
+            <ion-segment-button value="overview">Overview</ion-segment-button>
+            <ion-segment-button value="sessions">
+              Sessions <ion-badge>{{ patient.sessions.length }}</ion-badge>
+            </ion-segment-button>
+            <ion-segment-button value="medical">Medical details</ion-segment-button>
+          </ion-segment>
+
+          <!-- Overview tab -->
+          <div *ngIf="activeTab() === 'overview'" class="patient-overview">
+            <section class="detail-grid">
+              <ion-card>
+                <ion-card-content>
+                  <span class="metric-icon lilac">
+                    <ion-icon name="checkmark-circle"></ion-icon>
+                  </span>
+                  <div>
+                    <ion-note>Sessions completed</ion-note>
+                    <strong>{{ completedCount(patient) }} / {{ patient.sessions.length }}</strong>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+
+              <ion-card>
+                <ion-card-content>
+                  <span class="metric-icon purple">
+                    <ion-icon name="calendar-outline"></ion-icon>
+                  </span>
+                  <div>
+                    <ion-note>Next session</ion-note>
+                    <strong>{{ (nextSession(patient)?.date | date:'MMM d, y') || 'None scheduled' }}</strong>
+                  </div>
+                </ion-card-content>
+              </ion-card>
+            </section>
+
+            <ion-card class="surface-card">
+              <ion-card-header>
+                <div class="section-heading">
+                  <div>
+                    <span class="eyebrow">Clinical journey</span>
+                    <ion-card-title>Session timeline</ion-card-title>
+                  </div>
+                  <ion-button fill="clear" size="small" (click)="activeTab.set('sessions')">View all →</ion-button>
+                </div>
+              </ion-card-header>
+              <ion-card-content>
+                <div class="empty-state compact" *ngIf="patient.sessions.length === 0">
+  <div class="empty-icon muted">
+    <ion-icon name="calendar-outline" aria-hidden="true"></ion-icon>
+              </div>
+              <h3>No sessions yet</h3>
+              <p>Add the first session for {{ patient.name }}.</p>
+              <ion-button size="small" class="btn-add-session" (click)="addSession()">
+                + Add session
+              </ion-button>
+            </div>
+                <div class="timeline">
+                  <article *ngFor="let session of patient.sessions" class="timeline-item">
+                    <span class="timeline-dot" [class.complete]="session.status === 'completed'">
+                      {{ session.status === 'completed' ? '✓' : '○' }}
+                    </span>
+                    <div>
+                      <div class="timeline-meta">
+                        {{ session.date | date:'MMM d, y' }}
+                        <ion-badge [class.in-progress]="session.status === 'in-progress'">
+                          {{ statusLabel(session.status) }}
+                        </ion-badge>
+                      </div>
+                      <h3>{{ session.type }}</h3>
+                      <p>{{ session.procedure }}</p>
+                      <small *ngIf="session.next">Next: {{ session.next }}</small>
+                    <div class="session-actions">
+                      <button
+                        type="button"
+                        class="action-btn complete"
+                        [disabled]="isBusy(session.id)"
+                        (click)="toggleSession(session.id)">
+                        <ion-spinner *ngIf="isBusy(session.id)" name="dots"></ion-spinner>
+                        <ion-icon
+                          *ngIf="!isBusy(session.id)"
+                          [name]="session.status === 'completed' ? 'refresh-outline' : 'checkmark-circle-outline'"
+                          aria-hidden="true">
+                        </ion-icon>
+                        <span *ngIf="!isBusy(session.id)">
+                          {{ session.status === 'completed' ? 'Reopen' : 'Complete' }}
+                        </span>
+                      </button>
+
+                      <button
+                        type="button"
+                        class="action-btn danger"
+                        [disabled]="isBusy(session.id)"
+                        (click)="deleteSession(session.id)">
+                        <ion-icon name="trash-outline" aria-hidden="true"></ion-icon>
+                        <span>Delete</span>
+                      </button>
+                    </div>  
+                    </div>
+                  </article>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </div>
+
+          <!-- Sessions tab -->
+          <div *ngIf="activeTab() === 'sessions'" class="patient-overview">
+            <ion-card class="surface-card">
+              <ion-card-header>
+                <ion-card-title>All sessions</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                <div class="empty-state compact" *ngIf="patient.sessions.length === 0">
+                  <div class="empty-icon muted">
+                    <ion-icon name="calendar-outline" aria-hidden="true"></ion-icon>
+                  </div>
+                  <h3>No sessions yet</h3>
+                  <p>Add the first session for {{ patient.name }}.</p>
+                  <ion-button size="small" class="btn-add-session" (click)="addSession()">
+                    + Add session
+                  </ion-button>
+                </div>
+                <div class="timeline">
+                  <article *ngFor="let session of patient.sessions" class="timeline-item">
+                    <span class="timeline-dot" [class.complete]="session.status === 'completed'">
+                      {{ session.status === 'completed' ? '✓' : '○' }}
+                    </span>
+                    <div>
+                      <div class="timeline-meta">
+                        {{ session.date | date:'MMM d, y' }}
+                        <ion-badge [class.in-progress]="session.status === 'in-progress'">
+                          {{ statusLabel(session.status) }}
+                        </ion-badge>
+                      </div>
+                      <h3>{{ session.type }}</h3>
+                      <p>{{ session.procedure }}</p>
+                      <small *ngIf="session.next">Next: {{ session.next }}</small>
+                      <button class="delete-button" (click)="deleteSession(session.id)">Delete session</button>
+                    </div>
+                  </article>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </div>
+
+          <!-- Medical tab -->
+          <div *ngIf="activeTab() === 'medical'" class="patient-overview">
+            <ion-card class="surface-card">
+              <ion-card-header>
+                <ion-card-title>Medical details</ion-card-title>
+              </ion-card-header>
+              <ion-card-content class="medical-grid">
+                <div>
+                  <ion-note>Allergies</ion-note>
+                  <strong>{{ patient.allergies }}</strong>
+                </div>
+                <div>
+                  <ion-note>Medications</ion-note>
+                  <strong>{{ patient.medications }}</strong>
+                </div>
+                <div>
+                  <ion-note>Chief concern</ion-note>
+                  <strong>{{ patient.concern }}</strong>
+                </div>
+              </ion-card-content>
+            </ion-card>
+          </div>
+
+        </section>
+
+      </ng-container>
+
+    </main>
+  </div>
+
+ <nav class="mobile-nav" slot="fixed">
+  <button [class.active]="view() === 'dashboard'" (click)="go('dashboard')">
+    <ion-icon name="grid-outline"></ion-icon>
+    <span>Dashboard</span>
+  </button>
+  <div class="nav-fab-slot">
+    <button class="nav-fab" (click)="addPatient()" aria-label="Add new patient">
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </div>
+  <button [class.active]="view() !== 'dashboard'" (click)="go('patients')">
+    <ion-icon name="people-outline"></ion-icon>
+    <span>Patients</span>
+  </button>
+
+
+</nav>
 </ion-content>

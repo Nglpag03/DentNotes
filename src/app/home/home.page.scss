@@ -1,27 +1,2022 @@
-#container {
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Manrope:wght@400;500;600;700;800&display=swap');
+ion-refresher-content {
+  --color: #7953a2;
+  --spinner-color: #7953a2;
+}
 
+ion-refresher-content::part(text) {
+  color: #7953a2;
+  font-weight: 800;
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+/* ============================================================
+   HOST / THEME TOKENS
+   ============================================================ */
+:host {
+  --ink: #43265d;
+  --ink-2: #68477e;
+  --lilac: #b79af5;
+  --lilac-pale: #f0eaff;
+  --paper: #fbf9ff;
+  --line: #e6deef;
+  --muted: #7d7188;
+
+  display: block;
+  color: var(--ink);
+  font-family: 'Manrope', system-ui, sans-serif;
+}
+
+/* ============================================================
+   TOP TOOLBAR
+   ============================================================ */
+.top-toolbar {
+  --background: #f5f1fb;
+  --color: var(--ink);
+  border-bottom: 1px solid var(--line);
+}
+
+.top-toolbar ion-title {
+  font-weight: 800;
+  font-size: 15px;
+}
+
+.brand-mark {
+  color: #a47fe0;
+  margin-right: 7px;
+}
+
+.top-toolbar ion-menu-button {
+  display: none;
+}
+/* ============================================================
+   FOCUS MANAGEMENT (headings on view change)
+   ============================================================ */
+h1[tabindex="-1"]:focus {
+  outline: none;
+}
+
+h1[tabindex="-1"]:focus-visible {
+  outline: 2px solid var(--lilac);
+  outline-offset: 6px;
+  border-radius: 4px;
+}
+
+/* Also handle patients/dashboard headings consistently */
+.page-heading h1[tabindex="-1"],
+.patient-hero h1[tabindex="-1"] {
+  scroll-margin-top: 20px;  // breathing room when we scroll to it
+}
+/* ============================================================
+   APP LAYOUT
+   ============================================================ */
+.app-layout {
+  display: flex;
+  min-height: 100%;
+  background: var(--paper);
+}
+
+/* ============================================================
+   DESKTOP SIDEBAR
+   ============================================================ */
+.desktop-sidebar {
+  width: 285px;
+  flex: 0 0 285px;
+  background: #f5f1fb;
+  border-right: 1px solid var(--line);
+  padding: 26px 18px;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 56px);
+}
+
+/* ----- Brand block ----- */
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 9px;
+  margin-bottom: 35px;
+}
+
+.logo-tile {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: var(--ink);
+  color: #d8c5ff;
+  display: grid;
+  place-items: center;
+  font-size: 21px;
+  box-shadow: 0 5px 12px #43265d22;
+}
+
+.brand-block strong,
+.brand-block small {
+  display: block;
+}
+
+.brand-block strong {
+  font-size: 15px;
+}
+
+.brand-block small {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* ----- Side nav ----- */
+.side-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-bottom: 25px;
+}
+
+.side-nav button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  border-radius: 9px;
+  padding: 11px 12px;
+  text-align: left;
+  color: #8b7897;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.side-nav button ion-icon {
+  font-size: 17px;
+}
+
+.side-nav button ion-badge {
+  margin-left: auto;
+  --background: transparent;
+  --color: inherit;
+}
+
+.side-nav button.active {
+  background: var(--ink);
+  color: white;
+  box-shadow: 0 7px 14px #43265d29;
+}
+
+/* ----- Side label ----- */
+.side-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px 10px;
+  color: #7d7188;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  font-weight: 800;
+}
+
+.side-label button {
+  color: var(--ink);
+  font-size: 18px;
+}
+
+/* ----- Side search ----- */
+.side-search {
+  --background: #fff;
+  --border-radius: 9px;
+  --box-shadow: none;
+  padding: 0;
+  margin-bottom: 12px;
+}
+
+.side-search::part(native) {
+  border: 1px solid var(--line);
+}
+
+/* ----- Side patient list ----- */
+.side-patients {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: auto;
+}
+
+.side-patients button,
+.recent-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px;
+  border: 0;
+  background: transparent;
+  border-radius: 10px;
+  text-align: left;
+  color: var(--ink);
+}
+
+.side-patients button:hover,
+.side-patients button.selected {
+  background: #fff;
+  box-shadow: 0 6px 16px #43265d0d;
+}
+
+.side-patients ion-avatar,
+.recent-row ion-avatar,
+.directory-card ion-avatar {
+  width: 34px;
+  height: 34px;
+  background: #eee5fb;
+  color: #73529a;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.side-patients button > span:nth-child(2),
+.recent-row > span:nth-child(2) {
+  min-width: 0;
+  flex: 1;
+}
+
+.side-patients strong,
+.side-patients small,
+.recent-row strong,
+.recent-row small {
+  display: block;
+}
+
+.side-patients strong,
+.recent-row strong {
+  font-size: 11px;
+}
+
+.side-patients small,
+.recent-row small {
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.side-patients > button > ion-icon,
+.recent-row > ion-icon {
+  color: #a69bad;
+  font-size: 15px;
+}
+
+/* ----- Student chip ----- */
+.student-chip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: auto;
+  border-top: 1px solid var(--line);
+  padding: 15px 8px 0;
+}
+
+.student-chip ion-avatar {
+  width: 30px;
+  height: 30px;
+  background: var(--ink);
+  color: #d6c2ff;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+}
+
+.student-chip strong,
+.student-chip small {
+  display: block;
+}
+
+.student-chip strong {
+  font-size: 11px;
+}
+
+.student-chip small {
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.online-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #76c991;
+  margin-left: auto;
+}
+
+/* ============================================================
+   MAIN AREA
+   ============================================================ */
+.main-area {
+  flex: 1;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 54px 50px;
+}
+
+/* ============================================================
+   PAGE HEADING
+   ============================================================ */
+.page-heading,
+.patient-toolbar,
+.patient-hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.page-heading {
+  padding: 42px 0 28px;
+}
+
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: #89769a;
+  font-weight: 800;
+}
+
+.page-heading h1,
+.patient-hero h1 {
+  font: 400 38px/1 'DM Serif Display', serif;
+  letter-spacing: -.02em;
+  margin: 7px 0;
+}
+
+.page-heading h1 em {
+  color: #a37cde;
+  font-style: normal;
+  font-size: 25px;
+}
+
+.page-heading p,
+.patient-hero p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* ============ HEADING ACTION BUTTONS ============ */
+.heading-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  ion-button {
+    --border-radius: 10px;
+    --box-shadow: none;
+    text-transform: none;
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0;
+    height: 40px;
+    margin: 0;
+    --padding-start: 18px;
+    --padding-end: 18px;
+
+    &::part(native) {
+      padding: 0 18px;
+    }
+  }
+
+  /* "New patient" — outline purple */
+  .btn-new-patient {
+    --background: #ffffff;
+    --background-hover: #faf7ff;
+    --background-activated: #f5f0ff;
+    --color: #43265d;
+    --color-hover: #43265d;
+    --border-color: #e6deef;
+    --border-width: 1.5px;
+    --border-style: solid;
+    --border-radius: 10px;
+    font-weight: 800;
+  }
+
+  /* "Add session" — solid dark purple */
+  .btn-add-session {
+    --background: #3a2153;
+    --background-hover: #2c1940;
+    --background-activated: #1f1230;
+    --color: #ffffff;
+    --color-hover: #ffffff;
+    --border-radius: 10px;
+    font-weight: 800;
+  }
+}
+
+/* ============================================================
+   WELCOME CARD
+   ============================================================ */
+.welcome-card {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  min-height: auto;
+  margin-bottom: 18px;
+  padding: 20px;
+  border-radius: 17px;
+  color: white;
+  background: linear-gradient(118deg, #6b4388, #4b2d68);
+  box-shadow: 0 16px 32px #532f6f33;
+  overflow:hidden;
+}
+
+.welcome-card .light {
+  color: #d9c5ec;
+}
+
+.welcome-card h2 {
+  font: 400 31px/1.05 'DM Serif Display', serif;
+  line-height: 1.15;
+  margin: 6px 0;
+  font-size: 22;
+}
+
+.welcome-card h2 i {
+  color: #dbc9fb;
+}
+
+.welcome-card p {
+  font-size: 11px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: #e6dcef;
+  max-width: 340px;
+  line-height: 1.5;
+}
+
+.link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-weight: 800;
+  font-size: 10px;
+  padding: 0;
+}
+
+.link-button ion-icon {
+  font-size: 15px;
+}
+
+/* ----- Welcome art ----- */
+.welcome-art {
   position: absolute;
-  left: 0;
-  right: 0;
+  right: -60px;
   top: 50%;
   transform: translateY(-50%);
+  opacity: .35;
+  pointer-events: none;
+}
+.welcome-art .art-note {
+  display: none;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+.art-orb {
+  position: absolute;
+  right: 0;
+  top: -20px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: #d5c0ff2d;
 }
 
-#container p {
+.art-tooth {
+  position: absolute;
+  top: 50px;
+  right: 75px;
+  width: 105px;
+  height: 105px;
+  border-radius: 40%;
+  display: grid;
+  place-items: center;
+  background: #9872c2;
+  color: #fff;
+  font-size: 29px;
+  transform: rotate(8deg);
+  box-shadow: inset -11px -10px #4825621f;
+}
+
+.art-note {
+  position: absolute;
+  right: 0;
+  bottom: 8px;
+  padding: 9px 12px;
+  background: #fff;
+  color: #5f3e79;
+  border-radius: 9px;
+  box-shadow: 0 9px 18px #351b4c2e;
+  transform: rotate(-5deg);
+}
+
+.art-note span {
+  font-size: 8px;
+  font-weight: 800;
+  margin-left: 5px;
+}
+
+/* ============================================================
+   METRIC GRID / CARDS
+   ============================================================ */
+.metric-grid,
+.dashboard-columns,
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.metric-grid {
+  margin-bottom: 18px;
+}
+
+.metric-grid ion-card,
+.surface-card {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 7px 20px #43265d08;
+}
+
+.metric-grid ion-card-content {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px;
+}
+
+.metric-grid ion-note {
+  display: block;
+  color: #918496;
+  font-size: 9px;
+}
+
+.metric-grid strong {
+  display: block;
+  font-size: 21px;
+  line-height: 1.1;
+}
+
+.metric-grid small {
+  display: block;
+  color: #a195a7;
+  font-size: 9px;
+  margin-top: 4px;
+}
+
+.metric-grid b {
+  margin-left: auto;
+  color: #ad8ce1;
+}
+
+.metric-icon {
+  width: 35px;
+  height: 35px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+}
+
+.metric-icon.purple {
+  background: #eee5fb;
+  color: #7a55a5;
+}
+
+.metric-icon.lilac {
+  background: #f4ebfb;
+  color: #b26f9d;
+}
+
+.metric-icon.peach {
+  background: #fff0e6;
+  color: #cf835d;
+}
+
+/* ============================================================
+   DASHBOARD COLUMNS
+   ============================================================ */
+.dashboard-columns {
+  grid-template-columns: 1.2fr .8fr;
+}
+
+.surface-card ion-card-header {
+  padding: 19px 20px 10px;
+}
+
+.surface-card ion-card-content {
+  padding: 0 20px 19px;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.section-heading ion-card-title {
+  font: 400 24px 'DM Serif Display', serif;
+  margin-top: 5px;
+  color: var(--ink);
+}
+
+.section-heading ion-button {
+  font-size: 10px;
+  --color: #7953a2;
+}
+
+/* ----- Schedule / recent rows ----- */
+.schedule-row,
+.recent-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-top: 1px solid #eee8f2;
+  padding: 11px 2px;
+}
+
+.schedule-date {
+  width: 40px;
+  height: 40px;
+  border-radius: 7px;
+  background: #f2ebfb;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 40px;
+}
+
+.schedule-date strong {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.schedule-date small {
+  font-size: 7px;
+  color: #7953a2;
+  text-transform: uppercase;
+  font-weight: 800;
+  margin-top: 3px;
+}
+
+.schedule-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.schedule-copy strong,
+.schedule-copy small {
+  display: block;
+}
+
+.schedule-copy strong {
+  font-size: 11px;
+}
+
+.schedule-copy small {
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.schedule-row ion-badge,
+.timeline-meta ion-badge,
+.patient-hero ion-badge {
+  --background: #f0eaff;
+  --color: #7953a2;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.schedule-row ion-badge.in-progress {
+  --background: #e8f0fc;
+  --color: #577ca6;
+}
+
+.schedule-row > ion-icon {
+  color: #a69bad;
+}
+
+/* ============================================================
+   DIRECTORY PAGE
+   ============================================================ */
+.directory-page {
+  padding-top: 42px;
+}
+
+.directory-search {
+  --background: #fff;
+  --border-radius: 9px;
+  --box-shadow: none;
+  max-width: 430px;
+  margin: 0 0 18px;
+}
+
+.directory-search::part(native) {
+  border: 1px solid var(--line);
+}
+
+.directory-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.directory-card {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 12px;
+  text-align: left;
+  padding: 17px;
+  transition: .18s;
+}
+
+.directory-card:hover {
+  border-color: #cbb4e4;
+  transform: translateY(-2px);
+}
+
+.directory-card-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.directory-card > strong {
+  font-size: 14px;
+}
+
+.directory-card > p {
+  min-height: 27px;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.directory-card > small {
+  display: block;
+  border-top: 1px solid #eee8f2;
+  padding-top: 11px;
+  color: #897b91;
+  font-size: 9px;
+}
+
+/* ============================================================
+   PATIENT PAGE
+   ============================================================ */
+.patient-toolbar {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: transparent;
+  color: #7953a2;
+  font-weight: 800;
+}
+
+.patient-hero {
+  padding: 39px 0 28px;
+  align-items: center;
+}
+
+.patient-heading {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+}
+
+.patient-avatar {
+  width: 70px;
+  height: 70px;
+  background: var(--lilac);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  font-weight: 800;
+  box-shadow: 0 0 0 7px #b79af52e;
+}
+
+.patient-meta {
+  margin-top: 14px;
+  color: #958999;
+  font-size: 10px;
+}
+
+.patient-meta i {
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #b8aebe;
+  margin: 0 9px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 18px;
+}
+
+/* ----- Segment ----- */
+.patient-page ion-segment {
+  border-bottom: 1px solid var(--line);
+  --background: transparent;
+  justify-content: flex-start;
+}
+
+.patient-page ion-segment-button {
+  --color: #918496;
+  --color-checked: var(--ink);
+  --indicator-color: var(--lilac);
+  max-width: 150px;
+  font-size: 11px;
+  text-transform: none;
+}
+
+/* Fallback for buttons using these classes anywhere */
+.btn-new-patient {
+  --background: #ffffff !important;
+  --background-hover: #faf7ff !important;
+  --background-activated: #f5f0ff !important;
+  --color: #43265d !important;
+  --border-color: #e6deef !important;
+  --border-width: 1.5px !important;
+  --border-style: solid !important;
+  --border-radius: 10px !important;
+  --box-shadow: none !important;
+  text-transform: none !important;
+  font-weight: 800 !important;
+  font-family: 'Manrope', system-ui, sans-serif !important;
+  font-size: 12px !important;
+  letter-spacing: 0 !important;
+  height: 40px !important;
+}
+
+.btn-add-session {
+  --background: #3a2153 !important;
+  --background-hover: #2c1940 !important;
+  --background-activated: #1f1230 !important;
+  --color: #ffffff !important;
+  --border-radius: 10px !important;
+  --box-shadow: none !important;
+  text-transform: none !important;
+  font-weight: 800 !important;
+  font-family: 'Manrope', system-ui, sans-serif !important;
+  font-size: 12px !important;
+  letter-spacing: 0 !important;
+  height: 40px !important;
+}
+.btn-new-patient-in-patient{
+  --background: #3a2153 !important;
+  --background-hover: #2c1940 !important;
+  --background-activated: #1f1230 !important;
+  --color: #ffffff !important;
+  --border-radius: 10px !important;
+  --box-shadow: none !important;
+  text-transform: none !important;
+  font-weight: 800 !important;
+  font-family: 'Manrope', system-ui, sans-serif !important;
+  font-size: 12px !important;
+  letter-spacing: 0 !important;
+  height: 40px !important;
+}
+
+/* ----- Overview / detail ----- */
+.patient-overview {
+  padding-top: 22px;
+}
+
+.detail-grid {
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 18px;
+}
+
+.detail-grid ion-card-content {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px;
+}
+
+.detail-grid ion-note {
+  display: block;
+  color: #918496;
+  font-size: 9px;
+}
+
+.detail-grid strong {
+  display: block;
   font-size: 16px;
-  line-height: 22px;
+}
+/* ============================================================
+   SESSION ACTION BUTTONS (timeline)
+   ============================================================ */
+.session-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
 
-  color: #8c8c8c;
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink);
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s, transform .12s;
+  line-height: 1;
+}
 
+.action-btn ion-icon {
+  font-size: 14px;
+}
+
+.action-btn ion-spinner {
+  width: 13px;
+  height: 13px;
+  --color: currentColor;
+}
+
+.action-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.action-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.action-btn:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+/* Complete / Reopen */
+.action-btn.complete {
+  color: #4f9568;
+  border-color: #d4e8dc;
+}
+.action-btn.complete:hover:not(:disabled) {
+  background: #f0f9f3;
+  border-color: #b8dcc4;
+}
+
+/* Delete */
+.action-btn.danger {
+  color: #b04a4a;
+  border-color: #ecd0d0;
+}
+.action-btn.danger:hover:not(:disabled) {
+  background: #fff5f5;
+  border-color: #dfb3b3;
+}
+
+/* ----- Timeline ----- */
+.timeline {
+  position: relative;
+}
+
+.timeline:before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 10px;
+  bottom: 15px;
+  width: 1px;
+  background: #ddd1eb;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 14px;
+  position: relative;
+  padding-bottom: 25px;
+}
+
+.timeline-dot {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  border-radius: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  background: #fff8e4;
+  border: 3px solid #efd181;
+  color: #b79134;
+  font-size: 7px;
+  font-weight: 900;
+}
+
+.timeline-dot.complete {
+  background: var(--lilac-pale);
+  border-color: #c6acef;
+  color: #7655a1;
+}
+
+.timeline-meta {
+  font-size: 10px;
+  color: #8a7c92;
+}
+
+.timeline-meta ion-badge {
+  margin-left: 7px;
+}
+
+.timeline-item h3 {
+  font-size: 13px;
+  margin: 8px 0 4px;
+}
+
+.timeline-item p {
+  font-size: 11px;
+  color: #5d7782;
+  margin: 0 0 7px;
+}
+
+.timeline-item small {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+
+/* ----- Medical grid ----- */
+.medical-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.medical-grid ion-note,
+.medical-grid strong {
+  display: block;
+}
+
+.medical-grid ion-note {
+  font-size: 9px;
+  color: #918496;
+  margin-bottom: 6px;
+}
+
+.medical-grid strong {
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+/* ============================================================
+   RESPONSIVE — max-width 900px
+   ============================================================ */
+@media (max-width: 900px) {
+  .desktop-sidebar {
+    width: 230px;
+    flex-basis: 230px;
+  }
+
+  .main-area {
+    padding: 0 28px 40px;
+  }
+
+  .welcome-art {
+    opacity: .7;
+  }
+
+  .directory-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ============================================================
+   RESPONSIVE — max-width 700px
+   ============================================================ */
+@media (max-width: 700px) {
+  .top-toolbar ion-menu-button {
+    display: block;
+  }
+
+  .desktop-sidebar {
+    display: none;
+  }
+
+  .main-area {
+    padding: 0 16px 30px;
+    padding-bottom: 130px;
+  }
+
+  .page-heading,
+  .patient-toolbar,
+  .patient-hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .page-heading {
+    padding: 28px 0 22px;
+  }
+
+  .page-heading h1,
+  .patient-hero h1 {
+    font-size: 32px;
+  }
+
+  .heading-actions,
+  .toolbar-actions {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .heading-actions ion-button,
+  .toolbar-actions ion-button {
+    flex: 1;
+        flex: 1 1 0;
+    min-width: 0;
+    --padding-start: 8px;
+    --padding-end: 8px;
+    font-size: 11px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .welcome-card {
+    min-height: 270px;
+    padding: 22px;
+  }
+
+  .welcome-card h2 {
+    font-size: 27px;
+  }
+
+  .welcome-art {
+    position: absolute;
+    right: -50px;
+    bottom: -20px;
+    opacity: .6;
+  }
+
+  .metric-grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    /* Add padding so the last card isn't flush against the edge */
+    padding: 4px 4px 12px;
+    margin: 0 -16px 14px;  /* bleed to edges */
+    padding-left: 16px;
+    padding-right: 16px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    /* Hide scrollbar on iOS */
+    scrollbar-width: none;
+  }
+
+  .metric-grid ion-card-content {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .metric-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+    .metric-grid ion-card {
+    width: 100%;
+  }
+
+
+  .metric-grid strong {
+    font-size: 18px;
+  }
+
+  .metric-grid ion-note,
+  .metric-grid small {
+    font-size: 8px;
+  }
+
+  .metric-grid b {
+    display: none;
+  }
+
+  .dashboard-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .directory-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .directory-card {
+    padding: 13px;
+  }
+
+  .patient-hero {
+    padding: 27px 0 22px;
+  }
+
+  .patient-heading {
+    align-items: flex-start;
+  }
+
+  .patient-avatar {
+    width: 58px;
+    height: 58px;
+  }
+
+  .hero-actions {
+    align-items: flex-start;
+    gap: 11px;
+  }
+
+  .medical-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .patient-page ion-segment-button {
+    font-size: 10px;
+  }
+}
+
+/* ============================================================
+   LOADING / ERROR / EMPTY STATES
+   ============================================================ */
+.state-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 60vh;
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+
+.state-box ion-spinner {
+  --color: var(--lilac);
+}
+
+.surface-card ion-card-content > p,
+.directory-page > p {
+  color: var(--muted);
+  font-size: 11px;
+  margin: 0;
+  padding: 6px 0;
+}
+
+/* "In progress" badge inside the session timeline */
+.timeline-meta ion-badge.in-progress {
+  --background: #e8f0fc;
+  --color: #577ca6;
+}
+
+/* ============================================================
+   EMPTY STATES
+   ============================================================ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 28px 20px 22px;
+  gap: 4px;
+}
+
+.empty-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 10px;
+  font-size: 24px;
+
+  &.purple {
+    background: #eee5fb;
+    color: #7a55a5;
+  }
+  &.success {
+    background: #e8f5ec;
+    color: #4f9568;
+  }
+  &.muted {
+    background: #f0ecf5;
+    color: #89769a;
+  }
+}
+
+.empty-state h3 {
+  margin: 0 0 4px;
+  font: 400 18px/1.2 'DM Serif Display', serif;
+  color: var(--ink);
+  letter-spacing: -.01em;
+}
+
+.empty-state p {
+  margin: 0 0 14px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--muted);
+  max-width: 260px;
+}
+
+.empty-state ion-button {
+  --border-radius: 10px;
+  text-transform: none;
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0;
   margin: 0;
 }
 
-#container a {
-  text-decoration: none;
+/* Directory variant — sits above the grid, generous padding */
+.directory-empty {
+  padding: 54px 20px;
+}
+
+/* Sidebar variant — tiny and unobtrusive */
+.side-empty {
+  font-size: 10px;
+  color: var(--muted);
+  padding: 14px 10px;
+  text-align: center;
+  margin: 0;
+}
+
+.empty-state.compact {
+  padding: 20px 12px;
+}
+.empty-state.compact .empty-icon {
+  width: 42px;
+  height: 42px;
+  font-size: 20px;
+  border-radius: 12px;
+}
+.empty-state.compact h3 {
+  font-size: 15px;
+}
+.empty-state.compact p {
+  margin-bottom: 10px;
+}
+
+/* ============================================================
+   MOBILE BOTTOM NAV
+   ============================================================ */
+.mobile-nav {
+  display: none;
+}
+
+@media (max-width: 700px) {
+.mobile-nav {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;   /* three equal columns */
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  box-shadow: 0 -6px 20px #43265d10;
+}
+
+.mobile-nav > button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  border: 0;
+  background: transparent;
+  color: #8b7897;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 6px 0;
+  border-radius: 10px;
+}
+
+ .mobile-nav > button ion-icon {
+  font-size: 20px;
+}
+
+.mobile-nav > button.active {
+  color: var(--ink);
+  background: var(--lilac-pale);
+}
+
+/* FAB slot — sits between nav items */
+.nav-fab-slot {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding-bottom: 6px;
+  min-height: 44px;
+  position: relative;
+}
+
+.nav-fab {
+  position: absolute;
+  top: -14px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--ink);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+  box-shadow: 0 8px 20px #43265d4d, 0 0 0 4px #fff;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  backdrop-filter: blur(6px);
+}
+
+.nav-fab ion-icon {
+  font-size: 26px;
+}
+
+.nav-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px #43265d5c, 0 0 0 4px #fff;
+}
+
+.nav-fab:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px #43265d3d, 0 0 0 4px #fff;
+}
+
+  /* keep the last content from hiding behind the bar */
+  .main-area {
+    padding-bottom: 90px;
+  }
+}
+
+/* ============================================================
+   DELETE ACTIONS
+   ============================================================ */
+.heading-actions .btn-delete {
+  --background: #fff;
+  --background-hover: #fff5f5;
+  --color: #b04a4a;
+  --border-color: #ecd0d0;
+  --border-width: 1.5px;
+  --border-style: solid;
+  font-weight: 800;
+}
+
+
+
+/* ============================================================
+   SIGN OUT (desktop sidebar)
+   ============================================================ */
+.signout-btn {
+  margin-left: auto;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #8b7897;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.signout-btn:hover {
+  background: #fff;
+  color: #b04a4a;
+}
+
+.metric-link {
+  cursor: pointer;
+  transition: transform .15s, border-color .15s;
+}
+.metric-link:hover {
+  transform: translateY(-2px);
+  border-color: #cbb4e4;
+}
+
+.schedule-row {
+  cursor: pointer;
+  text-align: left;
+  border-radius: 8px;
+  transition: background .15s;
+}
+.schedule-row:hover,
+.schedule-row:focus-visible {
+  background: #faf7ff;
+  outline: none;
+}
+.schedule-row ion-badge.overdue {
+  --background: #fdecec;
+  --color: #b04a4a;
+}
+
+.row-action {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #b9aac7;
+  font-size: 20px;
+  cursor: pointer;
+  transition: .15s;
+}
+.row-action:hover {
+  background: #eaf6ee;
+  color: #4f9568;
+}
+
+/* ----- Loading skeleton ----- */
+.skeleton-page {
+  padding-top: 42px;
+}
+.sk {
+  border-radius: 12px;
+  background: linear-gradient(90deg, #eee8f4 25%, #f6f2fa 50%, #eee8f4 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.3s infinite linear;
+}
+.sk-title { height: 44px; width: 55%; margin-bottom: 26px; }
+.sk-banner { height: 200px; margin-bottom: 18px; border-radius: 17px; }
+.sk-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 18px; }
+.sk-row.two { grid-template-columns: 1.2fr .8fr; }
+.sk-card { height: 72px; }
+.sk-panel { height: 260px; }
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sk { animation: none; }
+}
+@media (max-width: 700px) {
+  .sk-row,
+  .sk-row.two { grid-template-columns: 1fr; }
+  .sk-card { height: 60px; }
+  .sk-panel { height: 180px; }
+}
+
+/* ============================================================
+   BUSY / DISABLED ACTION STATES
+   ============================================================ */
+.complete-button:disabled,
+.delete-button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+
+.row-action:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* tiny spinner inside the inline text buttons */
+.complete-button ion-spinner,
+.row-action ion-spinner {
+  width: 13px;
+  height: 13px;
+  --color: currentColor;
+}
+
+.row-action ion-spinner {
+  width: 18px;
+  height: 18px;
+}
+
+
+@media (max-width: 400px) {
+  .session-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .action-btn {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 700px) {
+  .page-heading h1,
+  .patient-hero h1 {
+    /* Allow long names to wrap instead of pushing off-screen */
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    /* Slightly smaller to fit more per line */
+    font-size: 28px;
+    line-height: 1.1;
+  }
+}
+
+/* ============================================================
+   MOBILE HEADER (visible < 700px only)
+   ============================================================ */
+.mobile-header {
+  display: none;   /* hidden on desktop */
+}
+
+@media (max-width: 700px) {
+  .mobile-header {
+    display: block;
+  }
+
+  .mobile-header ion-toolbar {
+    --background: rgba(250, 247, 255, 0.86);
+    --border-width: 0;
+    --min-height: 60px;
+    --padding-start: 18px;
+    --padding-end: 10px;
+    padding-top: env(safe-area-inset-top);
+    /* Frosted glass — content softly blurs as it scrolls under */
+    backdrop-filter: saturate(180%) blur(18px);
+    -webkit-backdrop-filter: saturate(180%) blur(18px);
+    /* Very subtle bottom hairline — not a border, just a whisper */
+    box-shadow: inset 0 -0.5px 0 rgba(67, 38, 93, 0.08);
+  }
+
+  .mobile-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 100%;
+  }
+
+  .mobile-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #513070 0%, #3a2153 100%);
+    color: #d8c5ff;
+    display: grid;
+    place-items: center;
+    font-size: 15px;
+    /* Subtle depth — much softer than the previous flat tile */
+    box-shadow: 0 2px 6px rgba(67, 38, 93, 0.18);
+    flex-shrink: 0;
+  }
+
+  .mobile-brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+
+  .mobile-title {
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -.015em;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+
+  .mobile-subtitle {
+    font-family: 'Manrope', system-ui, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--muted);
+    line-height: 1;
+    letter-spacing: 0;
+  }
+
+  /* ----- Sign out — soft, tappable, not loud ----- */
+  .mobile-signout {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 0;
+    background: transparent;
+    color: #8b7897;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition:
+      background .18s ease,
+      color .18s ease,
+      transform .12s ease;
+    -webkit-tap-highlight-color: transparent;
+    position: relative;
+  }
+
+  /* A very soft ring shows it's interactive even when not hovered */
+  .mobile-signout::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: transparent;
+    transition: background .18s ease;
+  }
+
+  .mobile-signout:hover {
+    color: var(--ink);
+  }
+
+  .mobile-signout:hover::before {
+    background: #f0eaff;
+  }
+
+  .mobile-signout:active {
+    transform: scale(.92);
+  }
+
+  .mobile-signout:active::before {
+    background: #e8ddfa;
+  }
+
+  .mobile-signout ion-icon {
+    font-size: 20px;
+    position: relative;   /* sits above the ::before ring */
+    z-index: 1;
+  }
+
+  /* ----- Content spacing below the fixed header ----- */
+  .main-area {
+    padding-top: calc(60px + env(safe-area-inset-top) + 4px);
+  }
+
+  /* Slightly reduce the top padding of the first section so it doesn't feel loose */
+  .dashboard-page .page-heading,
+  .directory-page .page-heading,
+  .patient-page .patient-toolbar {
+    padding-top: 24px;
+  }
+}
+
+/* ============================================================
+   MOBILE PAGE HEADING
+   ============================================================ */
+@media (max-width: 700px) {
+  .page-heading {
+    padding: 20px 0 18px;
+    gap: 14px;
+  }
+
+  /* The heading block: greeting + name on one line where possible */
+  .page-heading h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    margin: 4px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 6px;               /* small gap between greeting and name */
+    word-break: normal;
+    overflow-wrap: break-word;
+  }
+
+  /* "Good afternoon," — lighter, atmospheric */
+  .page-heading h1 .greeting-word {
+    font-weight: 400;
+    font-style: normal;
+    color: var(--ink);
+    /* Slightly muted so the name stands out */
+    opacity: .85;
+    font-size: .92em;
+  }
+
+  /* The name — the visual anchor */
+  .page-heading h1 .greeting-name {
+    font-weight: 400;
+    font-style: normal;
+    color: var(--ink);
+    /* Long names shrink to fit */
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 100%;
+  }
+
+  /* The subtitle — compact, quieter */
+  .page-heading p {
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: var(--muted);
+    margin: 8px 0 0;
+    max-width: 34ch;
+  }
+
+  /* The eyebrow (date) — even smaller, more letter-spaced */
+  .page-heading .eyebrow {
+    font-size: 9.5px;
+    letter-spacing: .14em;
+  }
+
+  /* Buttons stack their padding down a touch */
+  .page-heading .heading-actions {
+    margin-top: 4px;
+  }
+
+  .directory-page {
+    padding-top: 20px;
+  }
+
+  .directory-heading {
+    padding: 0 0 14px;
+    gap: 0;
+  }
+
+  .directory-heading h1 {
+    font-size: 22px;
+    line-height: 1.15;
+    margin: 4px 0 0;
+  }
+
+  .directory-heading .eyebrow {
+    font-size: 9.5px;
+    letter-spacing: .14em;
+  }
+
+  /* Dynamic count replaces the marketing subtitle */
+  .directory-count {
+    font-size: 11px;
+    color: var(--muted);
+    margin: 4px 0 0;
+    letter-spacing: 0;
+  }
+
+  /* Hide the redundant "+ New patient" button — the FAB does this */
+  .directory-heading .heading-actions {
+    display: none;
+  }
+
+  /* Search bar — tighter, and feels tappable */
+  .directory-search {
+    --background: #fff;
+    --border-radius: 12px;
+    --box-shadow: none;
+    --icon-color: #8b7897;
+    --placeholder-color: #a69bad;
+    --placeholder-font-weight: 600;
+    --placeholder-font-size: 12px;
+    padding: 0;
+    margin: 0 0 16px;
+    max-width: none;
+  }
+
+  .directory-search::part(native) {
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 4px 6px;
+  }
+
+  /* Stacked list — full-width rows */
+  .directory-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  /* ---------- Directory card (row layout) ---------- */
+
+  .directory-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 4px;
+    border: 0;
+    border-bottom: 1px solid #f0eaf6;
+    background: transparent;
+    border-radius: 0;
+    text-align: left;
+    transition: background .15s;
+  }
+
+  .directory-card:first-child {
+    border-top: 1px solid #f0eaf6;
+  }
+
+  .directory-card:hover,
+  .directory-card:focus-visible {
+    background: #faf7ff;
+    outline: none;
+  }
+
+  .directory-avatar {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    background: #eee5fb;
+    color: #73529a;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .directory-card-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .directory-card-body strong {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .directory-concern {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .directory-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .directory-card-meta ion-badge {
+    --background: #f0eaff;
+    --color: #7953a2;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 8px;
+    min-width: 20px;
+    text-align: center;
+  }
+
+  .directory-card-meta ion-icon {
+    font-size: 16px;
+    color: #c7bcd2;
+  }
+
+  /* Remove the old stacked-card styles for mobile */
+  .directory-card-top,
+  .directory-card > p,
+  .directory-card > small {
+    /* These are handled by the new .directory-card-body / .directory-card-meta */
+    all: unset;
+  }
+
+  /* Empty-state spacing on mobile */
+  .directory-empty {
+    padding: 40px 16px;
+  }
 }

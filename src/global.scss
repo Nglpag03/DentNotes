@@ -35,3 +35,7 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+.alert-danger {
+  color: #b04a4a !important;
+  font-weight: 800 !important;
+}

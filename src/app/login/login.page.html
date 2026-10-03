@@ -1,0 +1,112 @@
+<ion-content [fullscreen]="true">
+  <div class="login-wrap">
+
+    <div class="state-box" *ngIf="checking()">
+      <ion-spinner></ion-spinner>
+    </div>
+
+    <div class="login-card" *ngIf="!checking()">
+
+      <div class="login-brand">
+        <div class="logo-tile">✦</div>
+        <div>
+          <strong>DentNotes</strong>
+          <small>Student clinic notebook</small>
+        </div>
+      </div>
+
+      <div class="tabs" role="tablist" *ngIf="mode() !== 'forgot'">
+        <button type="button" role="tab" [class.active]="mode() === 'signin'"
+          [attr.aria-selected]="mode() === 'signin'" (click)="setMode('signin')">Sign in</button>
+        <button type="button" role="tab" [class.active]="mode() === 'signup'"
+          [attr.aria-selected]="mode() === 'signup'" (click)="setMode('signup')">Create account</button>
+      </div>
+
+      <h1>
+        {{ mode() === 'signin' ? 'Welcome back'
+          : mode() === 'signup' ? 'Start your notebook'
+          : 'Reset your password' }}
+      </h1>
+      <p class="sub">
+        {{ mode() === 'signin' ? 'Sign in to open your clinical notebook.'
+          : mode() === 'signup' ? 'Set up your account in a minute.'
+          : 'Enter your email and we will send you a link to choose a new password.' }}
+      </p>
+
+      <!-- Full name (sign-up only) -->
+      <div class="field" *ngIf="mode() === 'signup'">
+        <label>Full name</label>
+        <ion-input #nameInput type="text" placeholder="Your full name" autocomplete="name"
+          [class.invalid]="submitted() && nameError()"
+          [value]="fullName()" (ionInput)="onInput('name', $event)"
+          (keyup.enter)="emailInput?.setFocus()"></ion-input>
+        <span class="field-error" *ngIf="submitted() && nameError()">{{ nameError() }}</span>
+      </div>
+
+      <!-- Email -->
+      <div class="field">
+        <label>Email</label>
+        <ion-input #emailInput type="email" placeholder="you@school.edu" autocomplete="email"
+          inputmode="email" [class.invalid]="submitted() && emailError()"
+          [value]="email()" (ionInput)="onInput('email', $event)"
+          (keyup.enter)="mode() === 'forgot' ? submit() : passwordInput?.setFocus()"></ion-input>
+        <span class="field-error" *ngIf="submitted() && emailError()">{{ emailError() }}</span>
+      </div>
+
+      <!-- Password -->
+      <div class="field" *ngIf="mode() !== 'forgot'">
+        <label>Password</label>
+        <div class="input-wrap">
+          <ion-input #passwordInput [type]="showPassword() ? 'text' : 'password'"
+            [placeholder]="mode() === 'signin' ? 'Your password' : 'At least 8 characters'"
+            [autocomplete]="mode() === 'signin' ? 'current-password' : 'new-password'"
+            [class.invalid]="submitted() && passwordError()"
+            [value]="password()" (ionInput)="onInput('password', $event)"
+            (keyup.enter)="submit()"></ion-input>
+          <button type="button" class="eye" (click)="togglePassword()"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'">
+            <ion-icon [name]="showPassword() ? 'eye-off-outline' : 'eye-outline'"></ion-icon>
+          </button>
+        </div>
+        <span class="field-error" *ngIf="submitted() && passwordError()">{{ passwordError() }}</span>
+
+        <button type="button" class="forgot" *ngIf="mode() === 'signin'" (click)="setMode('forgot')">
+          Forgot password?
+        </button>
+
+        <div class="strength" *ngIf="mode() === 'signup' && password()">
+          <div class="bars">
+            <i *ngFor="let n of [1, 2, 3, 4]" [class.on]="strength() >= n"
+              [attr.data-level]="strength()"></i>
+          </div>
+          <span>{{ strengthLabel() }}</span>
+        </div>
+      </div>
+
+      <p class="msg error" *ngIf="error()" role="alert">{{ error() }}</p>
+      <p class="msg info" *ngIf="info()" role="status">{{ info() }}</p>
+
+      <ion-button class="submit" expand="block" [disabled]="busy() || cooldown() > 0" (click)="submit()">
+        <ion-spinner *ngIf="busy()" name="dots"></ion-spinner>
+        <span *ngIf="!busy()">
+          {{ mode() === 'signin' ? 'Sign in'
+            : mode() === 'signup' ? 'Create account'
+            : cooldown() > 0 ? 'Resend in ' + cooldown() + 's'
+            : 'Send reset link' }}
+        </span>
+      </ion-button>
+
+      <p class="foot" *ngIf="mode() === 'forgot'">
+        <button type="button" class="switch" (click)="setMode('signin')">← Back to sign in</button>
+      </p>
+
+      <p class="foot" *ngIf="mode() !== 'forgot'">
+        {{ mode() === 'signin' ? "Don't have an account?" : 'Already have an account?' }}
+        <button type="button" class="switch" (click)="setMode(mode() === 'signin' ? 'signup' : 'signin')">
+          {{ mode() === 'signin' ? 'Create one' : 'Sign in' }}
+        </button>
+      </p>
+
+    </div>
+  </div>
+</ion-content>
